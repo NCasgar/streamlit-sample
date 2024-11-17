@@ -42,7 +42,7 @@ with col1:
             orders["PREPARING"].append(order_number)
             save_orders(orders)
             message = st.success(f"Order #{order_number} added to 'PREPARING' list.")
-            time.sleep(3)
+            time.sleep(4)
             message.empty()
         elif order_number in orders["READY"]:
             st.error(f"Order #{order_number} is already in the 'READY' list.")
@@ -58,7 +58,7 @@ with col2:
             orders["READY"].append(transfer_order_number)
             save_orders(orders)
             message = st.success(f"Order #{transfer_order_number} transferred to 'READY'.")
-            time.sleep(3)
+            time.sleep(4)
             message.empty()
 
 # Third column: Delete from READY
@@ -69,7 +69,7 @@ with col3:
             orders["READY"].remove(delete_order_number)
             save_orders(orders)
             message = st.success(f"Order #{delete_order_number} deleted from 'READY'.")
-            time.sleep(3)
+            time.sleep(4)
             message.empty()
 
 # Row 1 for Select/Update/Search
@@ -84,9 +84,9 @@ with row1_col1:
 with row1_col2:
     new_order_number = st.number_input("NEW ORDER NUMBER", min_value=1, step=1, format="%d", key="new_order_input")
 
-# Column for Order Number to Search with default null/None
+# Column for Order Number to Search
 with row1_col3:
-    search_number = st.number_input("ORDER NUMBER", min_value=0, step=1, format="%d", key="search_input")
+    search_number = st.number_input("ORDER NUMBER", min_value=1, step=1, format="%d", key="search_input")
 
 # Row 2 for Update/Search buttons
 row2_col1, row2_col2, row2_col3 = st.columns(3)
@@ -99,7 +99,7 @@ with row2_col1:
             orders["PREPARING"].append(new_order_number)
             save_orders(orders)
             message = st.success(f"Order #{selected_order} updated to #{new_order_number} in 'PREPARING'.")
-            time.sleep(3)
+            time.sleep(4)
             message.empty()
         elif new_order_number in orders["READY"]:
             st.error(f"Order #{new_order_number} is already in the 'READY' list.")
@@ -113,7 +113,7 @@ with row2_col2:
         orders["READY"].sort()
         save_orders(orders)
         message = st.success("Both PREPARING and READY lists sorted.")
-        time.sleep(3)
+        time.sleep(4)
         message.empty()
 
 # Column for Search Order button
@@ -123,11 +123,11 @@ with row2_col3:
         found_in_ready = search_number in orders["READY"]
         if found_in_preparing or found_in_ready:
             message = st.success(f"Order #{search_number} found!")
-            time.sleep(3)
+            time.sleep(4)
             message.empty()
         else:
             message = st.error(f"Order #{search_number} not found in either list.")
-            time.sleep(3)
+            time.sleep(4)
             message.empty()
 
 # Custom CSS for layout and styling
@@ -170,6 +170,7 @@ st.markdown("""
             padding: 5px 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
+            margin: 10px;
         }
         .highlight {
             background-color: #ff9999 !important;
@@ -182,12 +183,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Display PREPARING orders with the title "Orders Currently PREPARING"
+# Display PREPARING orders horizontally with search highlighting
 st.markdown('<div class="preparing-box"><h3>Orders Currently PREPARING</h3>', unsafe_allow_html=True)
 preparing_numbers = " ".join([f"<span class='order-item highlight'>{num}</span>" if num == search_number else f"<span class='order-item'>{num}</span>" for num in orders["PREPARING"]])
 st.markdown(f"<div class='order-container'>{preparing_numbers}</div></div>", unsafe_allow_html=True)
 
-# Display READY orders with the title "Orders READY for Pickup"
+# Display READY orders horizontally with search highlighting
 st.markdown('<div class="ready-box"><h3>Orders READY for Pickup</h3>', unsafe_allow_html=True)
 ready_numbers = " ".join([f"<span class='order-item highlight'>{num}</span>" if num == search_number else f"<span class='order-item'>{num}</span>" for num in orders["READY"]])
 st.markdown(f"<div class='order-container'>{ready_numbers}</div></div>", unsafe_allow_html=True)
+
+# Collapsible Source Code Section
+with st.expander("Source Code"):
+    with open(__file__, "r") as code_file:
+        code_content = code_file.read()
+    st.code(code_content, language="python")
